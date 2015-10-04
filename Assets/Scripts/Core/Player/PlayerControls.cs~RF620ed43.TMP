@@ -1,0 +1,46 @@
+﻿using Core.Objects;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
+
+namespace Core.Player
+{
+    public class PlayerControls : Defaults.AbstractBehavior
+    {
+        public Movement ControlledMovement;
+
+        public Camera MainCamera;
+
+        public List<RectTransform> NotIgnoreUI = new List<RectTransform>();
+
+        protected override void OnAwake()
+        {
+            CashComponent<Transform>();
+        }
+
+        protected override void OnStart() { }
+
+        void OnMouseUp()
+        {
+            if (IsIgnorePointForUI(Input.mousePosition))
+                return;
+            ControlledMovement.ShiftTo(Input.mousePosition.x < Screen.width / 2 ?
+                ShiftDirection.Left : ShiftDirection.Right);
+        }
+
+        public bool IsIgnorePointForUI(Vector3 point)
+        {
+            foreach (RectTransform rect in NotIgnoreUI)
+            {
+                if (!rect.gameObject.activeInHierarchy)
+                    continue;
+                if (RectTransformUtility.RectangleContainsScreenPoint(rect, new Vector2(point.x, point.y), 
+                    MainCamera))
+                    return true;
+            }
+            return false;
+        }
+    }
+}

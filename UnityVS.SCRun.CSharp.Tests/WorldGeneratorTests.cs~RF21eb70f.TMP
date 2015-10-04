@@ -1,0 +1,82 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
+using Core.Spawners;
+using NUnit.Framework;
+using Core.Objects;
+using Core;
+using Core.Pools;
+
+namespace Tests.Core.Spawners
+{
+    public class WorldGeneratorTests
+    {
+        public static WorldGenerator GetArrange()
+        {
+            var result = new GameObject().AddComponent<WorldGenerator>();
+            var poolSet = result.gameObject.AddComponent<PoolsSet>();
+            poolSet.Prefab = Resources.
+                LoadAssetAtPath<GameObjectPool>("Assets/Prefab/SomethingPool.prefab");
+            poolSet.Pools.
+                 AddRange(new KeyedPool[] 
+                    {KeyedPoolsFactory.POOL1, KeyedPoolsFactory.POOL2,
+                        KeyedPoolsFactory.POOL3, KeyedPoolsFactory.POOL4});
+            poolSet.InstantiatePoolsOnAwakeAtEditor = true;
+            poolSet.Awake();
+            return result;
+        }
+
+        [Test,
+        TestCaseSource(typeof(SpawnGroupsFactory), "WorldItemGroupsTestCasesFor10Rows")]
+        public int OnStart_AfterAddingCases_CasesCountGeneratedCorrect(params WrappedWorldItemGroup[] cases)
+        {
+            //arrange
+            var instance = GetArrange();
+            instance.SizeOfCells = 1;
+            instance.RowWidthInCells = 5;
+            instance.InitRowCount = 10;
+            foreach (var wwig in cases)
+                instance.CaseGroups.Add(wwig.Group);
+            //act
+            instance.Awake();
+            instance.Start();
+            var objects = GameObject.FindObjectsOfType<CellableObject>();
+            var result = objects.Count();
+            for (int i = 0; i < objects.Length; i++)
+                GameObject.DestroyImmediate(objects[i].gameObject);
+            GameObject.DestroyImmediate(instance.gameObject);
+            //assert
+            return result;
+        }
+
+        [Test,
+        TestCaseSource(typeof(SpawnGroupsFactory), "WorldItemGroupsTestCasesFor10Rows")]
+        public void OnStart_AfterAddingCases_CasesCountGeneratedCorrectPosition(params WrappedWorldItemGroup[] cases)
+        {
+            int result = 0;
+            foreach (var wiig in cases)
+            {
+                result += (int)(10 / wiig.Group.MaxCellsDelaySpawn);
+            }
+            //arrange
+            var instance = GetArrange();
+            instance.SizeOfCells = 1;
+            instance.RowWidthInCells = 3;
+            instance.InitRowCount = 10;
+            foreach (var wwig in cases)
+                instance.CaseGroups.Add(wwig.Group);
+            //act
+            instance.Awake();
+            instance.Start();
+            var objects = GameObject.FindObjectsOfType<CellableObject>();
+            var count = objects.Length;
+            for (int i = 0; i < objects.Length; i++)
+                GameObject.DestroyImmediate(objects[i].gameObject);
+            GameObject.DestroyImmediate(instance.gameObject);
+            //assert
+            Assert.AreEqual(count, result);
+        }
+    }
+}

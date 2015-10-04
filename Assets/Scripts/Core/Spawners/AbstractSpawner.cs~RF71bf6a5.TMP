@@ -1,0 +1,63 @@
+﻿using Core.Objects;
+using Core.Pools;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
+
+namespace Core.Spawners
+{
+    public abstract class AbstractSpawner<TSpawnGroup, TSpawnCase> : AbstractObject
+        where TSpawnGroup : SpawnGroup<TSpawnCase>
+        where TSpawnCase : SpawnCase
+    {
+        [Header("Spawn")]
+        public Vector3 Offset;
+
+        public List<TSpawnGroup> CaseGroups = new List<TSpawnGroup>();
+
+        protected override void OnAwake()
+        {
+            CashComponent<Transform>();
+        }
+
+        protected virtual TSpawnGroup SwitchRandomCase(IEnumerable<TSpawnCase> group)
+        {
+            var groupList = group;
+            var currentChances = Random.Range(1, 100);
+            var chosens = CaseGroups.Where(o => o.ChanceWeight >= currentChances).
+                ToArray();
+            if (chosens.Length == 0)
+                return null;
+            var closer = chosens[0];
+            int rem = Mathf.Abs(closer.ChanceWeight - currentChances);
+            foreach (var c in chosens)
+            {
+                var locRem = Mathf.Abs(c.ChanceWeight - currentChances);
+                if (rem > locRem)
+                {
+                    rem = locRem;
+                    closer = c;
+                }
+            }
+            return closer;
+        }
+
+        public abstract void SpawnFromChosenedCase(TSpawnGroup chosened);
+    }
+
+    public class SpawnGroup<TCase> where TCase : SpawnCase
+    {
+        List<TCase> Cases = new List<TCase>();
+    }
+
+    [System.Serializable]
+    public class SpawnCase
+    {
+        [Editor.PoolKey("String key in pool manager")]
+        public string UsedPool;
+        [Range(0, 100)]
+        public int ChanceWeight;
+    }
+}

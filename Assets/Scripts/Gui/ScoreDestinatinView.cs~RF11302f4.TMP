@@ -1,0 +1,32 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine.UI;
+using UnityEngine;
+using Core.Player;
+
+namespace Gui
+{
+    [RequireComponent(typeof(Scrollbar))]
+    public class ScoreDestinatinView : Defaults.AbstractBehavior
+    {
+        public Player ObservedPlayer;
+
+        protected override void OnAwake() 
+        {
+            CashComponent<Scrollbar>();
+            if (ObservedPlayer != null && ObservedPlayer.CharacterPoints != null)
+                ObservedPlayer.CharacterPoints.ValueChanged += CharacterPointsValueChanged;
+        }
+
+        protected void CharacterPointsValueChanged(Core.Objects.Properties.Property sender, int oldVal)
+        {
+            
+        }
+
+        protected override void OnStart() { }
+
+        
+    }
+}

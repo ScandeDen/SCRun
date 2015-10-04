@@ -1,0 +1,34 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
+
+namespace Core.Objects.Bonuses
+{
+    [RequireComponent(typeof(Collider))]
+    public class AbstractBonus : AbstractObject
+    {
+        public List<string> TagsForTaking = new List<string>();
+
+        protected override void OnAwake()
+        {
+            base.OnAwake();
+            CashComponent<PoolableObject>();
+        }
+
+        void OnTriggerEnter(Collider other)
+        {
+            if (other.GetComponent<StatableObject>() == null)
+                return;
+            if (!TagsForTaking.Contains(other.tag))
+                return;
+            BonusApply(other);
+            var p = GetCashedComponent<PoolableObject>();
+            if (p != null)
+                p.Deactivate();
+        }
+
+        protected abstract void BonusApply(Collider target);
+    }
+}

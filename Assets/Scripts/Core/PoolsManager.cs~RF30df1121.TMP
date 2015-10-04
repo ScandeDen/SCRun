@@ -1,0 +1,56 @@
+﻿using Core.Pools;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
+
+namespace Core
+{
+    public class PoolsManager
+    {
+        private static PoolsManager instance;
+        public static PoolsManager Instance
+        {
+            get
+            {
+                if (instance == null)
+                    instance = new PoolsManager();
+                return instance;
+            }
+        }
+
+        private Dictionary<int, GameObjectPool> pools = 
+            new Dictionary<int, GameObjectPool>();
+
+        private PoolsManager()
+        {
+
+        }
+
+        public GameObjectPool GetPool(int poolKey)
+        {
+            return pools[poolKey];
+        }
+
+        public int GetPoolIndex(int poolKey)
+        {
+            return pools.Keys.ToList().IndexOf(poolKey);
+        }
+
+        public List<string> GetPoolKeys()
+        {
+            return pools.Values.ToList();
+        }
+
+        public void AddPool(string poolKey, GameObjectPool pool)
+        {
+            pools[poolKey] = pool;
+        }
+
+        public void Clear()
+        {
+            pools.Clear();
+        }
+    }
+}

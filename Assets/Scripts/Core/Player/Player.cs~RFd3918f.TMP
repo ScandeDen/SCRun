@@ -1,0 +1,53 @@
+﻿using Core.Objects.Properties;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
+
+namespace Core.Player
+{
+    public class Player : Defaults.AbstractBehavior
+    {
+        public DamagableObject CharacterLife;
+
+        public PointsCounter CharacterPoints;
+
+        protected override void OnAwake() 
+        {
+            if (CharacterLife != null)
+                CharacterLife.ValueChanged += CharacterLifeValueChanged;
+            if (CharacterPoints != null)
+                CharacterPoints.ValueChanged += CharacterPointsValueChanged;
+        }
+
+        protected override void OnStart() 
+        {
+
+        }
+
+        void CharacterPointsValueChanged(Property sender, int oldVal)
+        {
+            if (sender.Value <= 0)
+            {
+
+            }
+        }
+
+        void CharacterLifeValueChanged(Property sender, int oldVal)
+        {
+            if (sender.Value <= 0)
+            {
+                Application.LoadLevel(3);
+            }
+        }
+
+        void OnDestroy()
+        {
+            if (CharacterLife != null)
+                CharacterLife.ValueChanged -= CharacterLifeValueChanged;
+            if (CharacterPoints != null)
+                CharacterPoints.ValueChanged -= CharacterPointsValueChanged;
+        }
+    }
+}

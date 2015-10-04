@@ -1,0 +1,26 @@
+﻿using Core.Objects;
+using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Tests.Sources;
+using UnityEngine;
+
+namespace Tests.Core.Objects
+{
+    public class StatableObjectTests : AbstractGameObjectTest<StatableObject>
+    {
+        public override StatableObject GetArrange()
+        {
+            var result = new GameObject().AddComponent<StatableObject>();
+            return result;
+        }
+
+        [Test, TestCaseSource(typeof(StatesFactory),"")]
+        public void AddState_AfterAwake_AreStatesIncludedCorrectAfterResolvingConflicts(params WrappedEmptyState[] states)
+        {
+
+        }
+    }
+}

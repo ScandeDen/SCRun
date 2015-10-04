@@ -1,0 +1,7 @@
+C:\Assets\Tests\UnityVS.SCRun.CSharp.Tests.dll
+C:\Assets\Tests\UnityVS.SCRun.CSharp.Tests.pdb
+C:\Users\Sc\Documents\SCRun\Assets\Tests\UnityVS.SCRun.CSharp.Tests.dll
+C:\Users\Sc\Documents\SCRun\Assets\Tests\UnityVS.SCRun.CSharp.Tests.pdb
+C:\Users\Sc\Documents\SCRun\UnityVS.SCRun.CSharp.Tests\obj\Debug\UnityVS.SCRun.CSharp.Tests.csprojResolveAssemblyReference.cache
+C:\Users\Sc\Documents\SCRun\UnityVS.SCRun.CSharp.Tests\obj\Debug\UnityVS.SCRun.CSharp.Tests.dll
+C:\Users\Sc\Documents\SCRun\UnityVS.SCRun.CSharp.Tests\obj\Debug\UnityVS.SCRun.CSharp.Tests.pdb

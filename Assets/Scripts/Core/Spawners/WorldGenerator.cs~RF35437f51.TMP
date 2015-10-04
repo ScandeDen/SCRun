@@ -1,0 +1,142 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
+using Core.Spawners;
+using Core.Objects;
+
+namespace Core.Spawners
+{
+    public class WorldGenerator : AbstractSpawner
+    {
+        [Header("World generation")]
+        public AbstractObject TrackingObject;
+
+        [SerializeField]
+        protected Vector3 direction;
+        public Vector3 Direction
+        {
+            get
+            {
+                return direction;
+            }
+            set
+            {
+                direction = value;
+                normalizedDirection = direction.normalized;
+                var trans = GetCashedComponent<Transform>();
+                trans.LookAt(trans.position + direction);
+            }
+        }
+
+        public int InitRowCount = 10;
+
+        public int RowWidthInCells = 3;
+
+        public float SizeOfCells = 1f;
+
+        public int MinCellsDelaySpawn = 5;
+
+        public int MaxCellsDelaySpawn = 6;
+        
+        protected Vector3 LastFilledRow;
+
+        protected List<PoolableObject> spawnedItems = new List<PoolableObject>();
+
+        protected Vector3 normalizedDirection;
+
+        protected int rowsElapsedFromLastSpawn;
+
+        protected int rowsForSpawnNextItem;
+
+        protected Vector3 lastPositionOfTrackingObject;
+
+        protected override void OnAwake()
+        {
+            base.OnAwake();
+        }
+
+        protected override void OnStart()
+        {
+            LastFilledRow = GetCashedComponent<Transform>().position;
+            normalizedDirection = direction.normalized;
+            var trans = GetCashedComponent<Transform>();
+            trans.LookAt(trans.position + direction);
+            rowsElapsedFromLastSpawn = 0;
+            rowsForSpawnNextItem = Random.Range(MinCellsDelaySpawn,
+                MaxCellsDelaySpawn);
+            for (int i = 0; i < InitRowCount; i++)
+            {
+                SpawnFromChosenedCase(SwitchRandomCase());
+            }
+        }
+
+        void Update()
+        {
+            var trans = GetCashedComponent<Transform>();
+            var plane = new Plane(trans.forward, lastPositionOfTrackingObject + 
+                normalizedDirection * SizeOfCells);
+            if (plane.
+                GetSide(TrackingObject.GetCashedComponent<Transform>().position))
+            {
+                
+                
+            }
+        }
+
+        public void ShiftToNextRow()
+        {
+            SpawnFromChosenedCase(SwitchRandomCase());
+        }
+
+        public override void SpawnFromChosenedCase(SpawnCase chosened)
+        {
+            if (rowsElapsedFromLastSpawn >= rowsForSpawnNextItem)
+            {
+                var spawnItem = PoolsManager.Instance.GetPool(chosened.UsedPool).
+                    GetFreeItem();
+                if (spawnItem == null)
+                    return;
+                if (!spawnedItems.Contains(spawnItem))
+                {
+                    spawnItem.Deactivated += RowDeactivated;
+                    spawnedItems.Add(spawnItem);
+                }
+                spawnItem.ResetChanges();
+                LastFilledRow += normalizedDirection * SizeOfCells;
+                var transformIns = GetCashedComponent<Transform>();
+                var itemCellable = spawnItem.GetComponent<CellableObject>();
+                var cols = itemCellable.ColumnCount % 2;
+                var x = Random.Range(cols, RowWidthInCells - cols);
+                var shift = Vector3.right * (x * SizeOfCells);
+                var itemTransform = spawnItem.GetComponent<Transform>();
+                itemTransform.localPosition = LastFilledRow + shift;
+                itemTransform.SetParent(transformIns, false);
+                spawnItem.Activate();
+                rowsElapsedFromLastSpawn = 0;
+                rowsForSpawnNextItem = Random.Range(MinCellsDelaySpawn,
+                    MaxCellsDelaySpawn);
+            }
+            else
+            {
+                rowsElapsedFromLastSpawn++;
+            }
+        }
+
+        protected void RowDeactivated(Defaults.IPoolable sender)
+        {
+            var spawnedItem = (PoolableObject)sender;
+            spawnedItem.Deactivated -= RowDeactivated;
+            spawnedItems.Remove(spawnedItem);
+            ShiftToNextRow();
+        }
+
+        void OnDestroy()
+        {
+            foreach (var r in spawnedItems)
+            {
+                r.Deactivated -= RowDeactivated;
+            }
+        }
+    }
+}

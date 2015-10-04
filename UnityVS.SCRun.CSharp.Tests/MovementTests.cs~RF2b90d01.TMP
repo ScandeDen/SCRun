@@ -1,0 +1,49 @@
+﻿using Core.Objects;
+using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
+
+namespace Tests.Core.Objects
+{
+    public class MovementTests : AbstractGameObjectTest<Movement>
+    {
+        public override static Movement GetArrange()
+        {
+            var result = new GameObject().AddComponent<Movement>();
+            result.SpeedVector = new Vector3(0, 0, 1);
+            result.JumpPower = 200f;
+            result.ShiftDistance = 1f;
+            result.ShiftDelay = 0f;
+            return result;
+        }
+
+        [Test, 
+        TestCase(Vector3.zero),
+        TestCase(Vector3.up),
+        TestCase(Vector3.right),
+        TestCase(Vector3.forward),
+        TestCase(Vector3.left),
+        TestCase(Vector3.one)]
+        public void OnFixedUpdate_AfterAwakeSpeedVectorSetted_IsReachedDestinationAtCorrectTime(Vector3 speedVector)
+        {
+            //arrange
+            var instance = GetArrange();
+            instance.SpeedVector = speedVector;
+            var destination = instance.transform.position + speedVector * 10;
+            //act
+            instance.Awake();
+            instance.IsOn = true;
+            instance.Start();
+            for (int i = 0; i < 20; i++)
+            {
+                Time.fixedDeltaTime = 0.5f;
+                instance.FixedUpdate();
+            }
+            //assert
+            Assert.AreEqual(destination, instance.transform.position);
+        }
+    }
+}

@@ -1,0 +1,109 @@
+﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+namespace Core.Objects
+{
+    public class Movement : AbstractObject
+    {
+        public event MovingSpeedChangedHandler SpeedChanged;
+
+        public event MovingHandler MovingStoped;
+
+        public event MovingHandler MovingStarted;
+
+        [Tooltip("Speed in m/s"), SerializeField]
+        protected Vector3 speedVector;
+        public Vector3 SpeedVector
+        {
+            get
+            {
+                return speedVector;
+            }
+            set
+            {
+                var temp = speedVector;
+                speedVector = value;
+                speedVectorMagnitude = speedVector.magnitude;
+                if (SpeedChanged != null)
+                    SpeedChanged.Invoke(temp);
+            }
+        }
+
+        public float StrafeSpeed = 1f;
+
+        [SerializeField]
+        protected bool isOn = true;
+        public bool IsOn
+        {
+            get
+            {
+                return isOn;
+            }
+            set
+            {
+                if (value)
+                {
+                    if (MovingStarted != null)
+                        MovingStarted.Invoke();
+                }
+                else
+                {
+                    if (MovingStoped != null)
+                        MovingStoped.Invoke();
+                }
+                isOn = value;
+            }
+        }
+
+        protected float speedVectorMagnitude;
+
+        protected override void OnAwake()
+        {
+            base.OnAwake();
+            speedVectorMagnitude = speedVector.magnitude;
+        }
+
+        void Update()
+        {
+            if (!IsOn)
+            {
+                return;
+            }
+            var transformIns = GetCashedComponent<Transform>();
+            var p = transformIns.position;
+            var shiftedP = p + SpeedVector;
+            transformIns.LookAt(shiftedP);
+            transformIns.position = Vector3.MoveTowards(p, shiftedP, 
+                speedVectorMagnitude * Time.deltaTime);
+        }
+
+        public void MoveLeft()
+        {
+            if (!IsOn)
+            {
+                return;
+            }
+            var transformIns = GetCashedComponent<Transform>();
+            var p = transformIns.position;
+            var leftP = transformIns.right * (-1) * StrafeSpeed;
+            transformIns.position = transformIns.position + leftP;
+        }
+
+        public void MoveRight()
+        {
+            if (!IsOn)
+            {
+                return;
+            }
+            var transformIns = GetCashedComponent<Transform>();
+            var p = transformIns.position;
+            var leftP = transformIns.right * StrafeSpeed;
+            transformIns.position = Vector3.MoveTowards(p, leftP, StrafeSpeed);
+        }
+    }
+
+    public delegate void MovingHandler();
+
+    public delegate void MovingSpeedChangedHandler(Vector3 oldSpeed);
+}

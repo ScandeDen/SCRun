@@ -1,0 +1,47 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using NUnit.Framework;
+using Core;
+using System.Collections;
+
+namespace Tests.Core
+{
+    [TestFixture]
+    public class PoolSetTests
+    {
+        public static IEnumerable KeyedPoolTestCases
+        {
+            get
+            {
+                var keyedPools = new List<KeyedPool>();
+                yield return new TestCaseData(keyedPools).Returns(0);
+                keyedPools.Add(new KeyedPool("pool1"));
+                yield return new TestCaseData(keyedPools).Returns(2);
+                keyedPools.Add(new KeyedPool("pool2"));
+                keyedPools.Add(new KeyedPool("pool3"));
+                yield return new TestCaseData(keyedPools).Returns(3);
+                keyedPools.Add(new KeyedPool("pool2"));
+                keyedPools.Add(new KeyedPool("pool3"));
+                keyedPools.Add(new KeyedPool("pool4"));
+                yield return new TestCaseData(keyedPools).Returns(4);
+            }
+        }  
+
+        [Test, TestCaseSource(typeof(PoolSetTests),"KeyedPoolTestCases")]
+        public int UpdatePools_AfterAddingKeyedPools_CorrectCountAtPoolsManager(params KeyedPool pools)
+        {
+            int result = 0;
+            //arrange
+
+            //act
+
+            //assert
+
+            return ;
+        }
+
+        
+    }
+}

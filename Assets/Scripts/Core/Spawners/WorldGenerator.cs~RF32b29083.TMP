@@ -1,0 +1,78 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
+using Core.Spawners;
+using Core.Objects;
+
+namespace Core
+{
+    public class WorldGenerator : AbstractSpawner
+    {
+        [Header("World generation")]
+
+        public Vector3 DirectionOffset;
+
+        public int InitRowCount = 10;
+
+        public int RowWidthInCells = 3;
+
+        public float SizeOfCells = 1f;
+
+        public int MinCellsForSpawn = 5;
+
+        public int MaxCellsForSpawn = 6;
+        
+        protected Vector3 LastFilledRow;
+
+        protected List<PoolableObject> rows = new List<PoolableObject>();
+
+        protected override void OnAwake()
+        {
+            base.OnAwake();
+            LastFilledRow = GetCashedComponent<Transform>().position;
+            for(int i = 0; i < InitRowCount; i++)
+            {
+                SpawnFromChosenedCase(SwitchRandomCase());
+            }
+        }
+
+        public void ShiftToNextRow()
+        {
+            SpawnFromChosenedCase(SwitchRandomCase());
+        }
+
+        public override void SpawnFromChosenedCase(SpawnCase chosened)
+        {
+            var row = PoolsManager.Instance.GetPool(chosened.UsedPool).GetFreeItem();
+            if (row == null)
+                return;
+            if (!rows.Contains(row))
+            {
+                row.Deactivated += RowDeactivated;
+                rows.Add(row);
+            }
+            row.ResetChanges();
+            LastFilledRow += DirectionOffset;
+            var p = LastFilledRow + Offset;
+            row.GetCashedComponent<Transform>().position = p;
+            row.Activate();
+        }
+
+        protected void RowDeactivated(Defaults.IPoolable sender)
+        {
+            var row = (PoolableObject)sender;
+            row.Deactivated -= RowDeactivated;
+            rows.Remove(row);
+            ShiftToNextRow();
+        }
+
+        void OnDestroy()
+        {
+            foreach (var r in rows)
+            {
+                r.Deactivated -= RowDeactivated;
+            }
+        }
+    }
+}

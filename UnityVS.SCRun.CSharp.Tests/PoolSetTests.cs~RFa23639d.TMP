@@ -1,0 +1,76 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using NUnit.Framework;
+using Core;
+using System.Collections;
+using UnityEngine;
+
+namespace Tests.Core
+{
+    [TestFixture]
+    public class PoolSetTests
+    {
+        public static IEnumerable EmptyKeyedPoolTestCases
+        {
+            get
+            {
+                var keyedPools = new List<KeyedPool>();
+                yield return new TestCaseData(keyedPools.ToArray()).Returns(0).
+                    SetName("Empty keyed pools: 0");
+                keyedPools.Add(new KeyedPool("pool1"));
+                yield return new TestCaseData(keyedPools.ToArray()).Returns(1).
+                    SetName("Not empty pool1");
+                keyedPools.Add(new KeyedPool("pool2"));
+                keyedPools.Add(new KeyedPool("pool3"));
+                yield return new TestCaseData(keyedPools.ToArray()).Returns(3).
+                    SetName("pool1, pool2, pool3");
+                keyedPools.Add(new KeyedPool("pool2"));
+                keyedPools.Add(new KeyedPool("pool3"));
+                keyedPools.Add(new KeyedPool("pool4"));
+                yield return new TestCaseData(keyedPools.ToArray()).Returns(4);
+            }
+        }  
+
+        public static PoolsSet GetArrange()
+        {
+            var result = new GameObject().AddComponent<PoolsSet>();
+            //result.Awake();
+            return result;
+        }
+
+        [Test, TestCaseSource(typeof(PoolSetTests), "EmptyKeyedPoolTestCases")]
+        public int UpdatePools_AfterAddingEmptyKeyedPools_CorrectCountAtPoolsManager(params KeyedPool[] pools)
+        {
+            //arrange
+            var instance = GetArrange();
+            foreach (var kp in pools)
+            {
+                instance.Pools.Add(kp);
+            }
+            //act
+            instance.Update();
+            var result = PoolsManager.Instance.Count();
+            GameObject.DestroyImmediate(instance.gameObject);
+            //assert
+            return result;
+        }
+
+        //[Test, TestCaseSource(typeof(PoolSetTests), "EmptyKeyedPoolTestCases")]
+        public int OnAwake_AfterAddingKeyedPools_PoolsAreInstantiated(params KeyedPool[] pools)
+        {
+            //arrange
+            var instance = GetArrange();
+            foreach (var kp in pools)
+            {
+                instance.Pools.Add(kp);
+            }
+            //act
+            instance.Update();
+            //assert
+            return PoolsManager.Instance.Count();
+        }
+        
+    }
+}

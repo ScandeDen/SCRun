@@ -1,0 +1,114 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
+
+namespace Core.Objects.Properties
+{
+    /// <summary>
+    /// Компонент свойства очков жизни, позволяет объекту быть разрушаемым.
+    /// </summary>
+    [RequireComponent(typeof(Collider))]
+    public class DamagableObject : Property
+    {
+        /// <summary>
+        /// Список тегов и количество повреждений получаемых от объектов с таким тегом.
+        /// </summary>
+        [Header("Damage")]
+        public List<ObjectDamage> TakingDamageFrom = new List<ObjectDamage>();
+        /// <summary>
+        /// Коллаидер на случай если его нужно отключать когда объект оглушен.
+        /// </summary>
+        public Collider Collider;
+        /// <summary>
+        /// Событие оглушения.
+        /// </summary>
+        public event DamageEventHandler Stunned;
+
+        protected bool isStunned;
+        /// <summary>
+        /// Оглушен ли объект.
+        /// </summary>
+        public bool IsStunned
+        {
+            get
+            {
+                return isStunned;
+            }
+        }
+        /// <summary>
+        /// Корутина оглушения.
+        /// </summary>
+        protected Defaults.SafeCoroutine stunCoroutine;
+
+        protected override void OnAwake()
+        {
+            base.OnAwake();
+            CashComponent<Movement>();
+            stunCoroutine = new Defaults.SafeCoroutine(this);
+        }
+
+        void OnCollisionEnter(Collision other)
+        {
+            if (Value <= 0)
+                return;
+            foreach(var objDam in TakingDamageFrom)
+            {
+                if (other.gameObject.CompareTag(objDam.Tag))
+                {
+                    Value -= objDam.Damage;
+                    if (!stunCoroutine.IsActive && objDam.StunSeconds > 0)
+                    {
+                        
+                        stunCoroutine.Start(Stun(objDam));
+                        if (Stunned != null)
+                            Stunned.Invoke(true);
+                    }
+                    break;
+                }
+            }
+        }
+        /// <summary>
+        /// Возвращает энумератор для корутины оглушения.
+        /// </summary>
+        /// <param name="damage"> Структура, содержащая информацию о повреждении. </param>
+        /// <returns> Энумератор. </returns>
+        protected IEnumerator Stun(ObjectDamage damage)
+        {
+            SetStunned(true, damage.IsDisableCollider);
+            yield return new WaitForSeconds(damage.StunSeconds);
+            stunCoroutine = null;
+            if (Stunned != null)
+                Stunned.Invoke(false);
+        }
+        /// <summary>
+        /// Устанавливает состояние оглушения, также может отключать коллаидер.
+        /// </summary>
+        /// <param name="isStunned"></param>
+        /// <param name="disableCollider"></param>
+        protected void SetStunned(bool isStunned, bool disableCollider = true)
+        {
+            this.isStunned = isStunned;
+            var move = GetCashedComponent<Movement>();
+            if (move != null)
+                move.IsOn = !isStunned;
+            if ((disableCollider && isStunned == true) || isStunned == false)
+            {
+                if (Collider != null)
+                    Collider.enabled = !isStunned;
+            }
+        }
+    }
+
+    [System.Serializable]
+    public struct ObjectDamage
+    {
+        public string Tag;
+        public int Damage;
+        public float StunSeconds;
+        public bool IsDisableCollider;
+    }
+
+    public delegate void DamageEventHandler(bool isStunned);
+}

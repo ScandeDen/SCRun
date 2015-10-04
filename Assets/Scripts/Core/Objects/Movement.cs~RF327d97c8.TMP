@@ -1,0 +1,173 @@
+﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using Defaults;
+
+namespace Core.Objects
+{
+    public enum ShiftDirection
+    {
+        Right,
+        Left
+    }
+
+    public class Movement : AbstractObject
+    {
+        public event MovingSpeedChangedHandler SpeedChanged;
+
+        public event MovingHandler MovingStoped;
+
+        public event MovingHandler MovingStarted;
+
+        public event MovingHandler ShiftDisabled;
+
+        public event MovingHandler ShiftEnabled;
+
+        [Tooltip("Speed in m/s"), SerializeField]
+        protected Vector3 speedVector;
+        public Vector3 SpeedVector
+        {
+            get
+            {
+                return speedVector;
+            }
+            set
+            {
+                var temp = speedVector;
+                speedVector = value;
+                speedVectorMagnitude = speedVector.magnitude;
+                if (SpeedChanged != null)
+                    SpeedChanged.Invoke(temp);
+            }
+        }
+
+        public float ShiftDistance = 1f;
+
+        public float ShiftDelay = 0.5f;
+
+        [SerializeField]
+        protected bool isOn = true;
+        public bool IsOn
+        {
+            get
+            {
+                return isOn;
+            }
+            set
+            {
+                isOn = value;
+                if (value)
+                {
+                    if (MovingStarted != null)
+                        MovingStarted.Invoke();
+                }
+                else
+                {
+                    if (MovingStoped != null)
+                        MovingStoped.Invoke();
+                }
+            }
+        }
+
+        [SerializeField]
+        protected bool isCanShift;
+        public bool IsCanShift
+        {
+            get
+            {
+                return isCanShift;
+            }
+            set
+            {
+                isCanShift = value;
+                if (value)
+                {
+                    if (ShiftEnabled != null)
+                        ShiftEnabled.Invoke();
+                }
+                else
+                {
+                    if (ShiftDisabled != null)
+                        ShiftDisabled.Invoke();
+                }
+            }
+        }
+
+        protected float speedVectorMagnitude;
+
+        protected SafeCoroutine shiftDelayCoroutine;
+
+        protected override void OnAwake()
+        {
+            base.OnAwake();
+            speedVectorMagnitude = speedVector.magnitude;
+            shiftDelayCoroutine = new SafeCoroutine(this);
+        }
+
+        void Update()
+        {
+            if (!IsOn)
+            {
+                return;
+            }
+            var transformIns = GetCashedComponent<Transform>();
+            var p = transformIns.position;
+            var shiftedP = p + SpeedVector;
+            transformIns.LookAt(shiftedP);
+            transformIns.position = Vector3.MoveTowards(p, shiftedP, 
+                speedVectorMagnitude * Time.deltaTime);
+        }
+
+        protected IEnumerator ShiftDelayCoroutine()
+        {
+            while (true)
+            {
+                IsCanShift = false;
+                yield return new WaitForSeconds(ShiftDelay);
+                IsCanShift = true;
+            }
+        }
+
+        public void ShiftToLeft()
+        {
+            
+            transformIns.position = transformIns.position + leftP;
+            shiftDelayCoroutine.Start(ShiftDelayCoroutine());
+        }
+
+        public void ShiftToRight()
+        {
+            if (!IsOn)
+            {
+                return;
+            }
+            var transformIns = GetCashedComponent<Transform>();
+            
+            transformIns.position = transformIns.position + rightP;
+            shiftDelayCoroutine.Start(ShiftDelayCoroutine());
+        }
+
+        public void ShiftTo(ShiftDirection direction)
+        {
+            if (!IsOn)
+            {
+                return;
+            }
+            var transformIns = GetCashedComponent<Transform>();
+            var shift = Vector3.zero;
+            switch (direction)
+            {
+                case ShiftDirection.Right:
+                    shift = transformIns.right * ShiftDistance;
+                    break;
+                case ShiftDirection.Left:
+                    shift = transformIns.right * (-1) * ShiftDistance;
+                    break;
+            }
+        }
+    }
+
+    public delegate void MovingHandler();
+
+    public delegate void MovingSpeedChangedHandler(Vector3 oldSpeed);
+}

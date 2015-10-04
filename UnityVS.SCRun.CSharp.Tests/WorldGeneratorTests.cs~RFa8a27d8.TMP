@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
+using Core.Spawners;
+
+namespace Tests
+{
+    public class WorldGeneratorTests
+    {
+        public static WorldGenerator GetArrange()
+        {
+            var result = new GameObject().AddComponent<WorldGenerator>();
+            //result.Awake();
+            return result;
+        }
+    }
+}

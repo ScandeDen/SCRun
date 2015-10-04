@@ -1,0 +1,36 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Defaults
+{
+    public class SafeCoroutine
+    {
+        protected AbstractBehavior behavior;
+
+        protected IEnumerator spawnCoroutine;
+
+        public SafeCoroutine(AbstractBehavior behavior)
+        {
+            this.behavior = behavior;
+        }
+
+        protected void StartSpawn()
+        {
+            if (spawnCoroutine != null)
+                StopSpawn();
+            spawnCoroutine = Spawn();
+            StartCoroutine(spawnCoroutine);
+        }
+
+        protected void StopSpawn()
+        {
+            if (spawnCoroutine == null)
+                return;
+            StopCoroutine(spawnCoroutine);
+            spawnCoroutine = null;
+        }
+    }
+}

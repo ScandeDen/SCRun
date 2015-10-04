@@ -1,0 +1,45 @@
+﻿using Core.Spawners;
+using NUnit.Framework;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Tests
+{
+    public class SpawnGroupsFactory
+    {
+        public static IEnumerable GetWorldItemGroupsTestCases(int forRowsCount)
+        {
+            var groups = new List<WorldItemsGroup>();
+            yield return new TestCaseData(groups.ToArray()).Returns(0).
+                SetName("Empty keyed pools: 0");
+            var group = new WorldItemsGroup();
+            group.MaxCellsDelaySpawn = 1;
+            group.MinCellsDelaySpawn = 1;
+            group.Cases.Add(new SpawnCase(KeyedPoolsFactory.POOL1.PoolKey, 100));
+            groups.Add(group);
+            yield return new TestCaseData(groups.ToArray()).Returns(forRowsCount).
+                SetName("Empty keyqed pools: pool1");
+            group = new WorldItemsGroup();
+            group.MaxCellsDelaySpawn = 2;
+            group.MinCellsDelaySpawn = 2;
+            group.Cases.Add(new SpawnCase(KeyedPoolsFactory.POOL2.PoolKey, 100));
+            groups.Add(group); 
+            group = new WorldItemsGroup();
+            group.MaxCellsDelaySpawn = 3;
+            group.MinCellsDelaySpawn = 3;
+            group.Cases.Add(new SpawnCase(KeyedPoolsFactory.POOL3.PoolKey, 100));
+            groups.Add(group);
+            yield return new TestCaseData(groups.ToArray()).Returns(forRowsCount
+                + forRowsCount % 2 + forRowsCount % 3).
+                SetName("Empty keyqed pools: pool1, pool2, pool3");
+            //groups.Add(new KeyedPool("pool2"));
+            //groups.Add(new KeyedPool("pool3"));
+            //groups.Add(new KeyedPool("pool4"));
+            yield return new TestCaseData(groups.ToArray()).Returns(4).
+                SetName("Empty keyqed pools: pool1, pool2, pool3, pool2, pool3, pool4");
+        }
+    }
+}

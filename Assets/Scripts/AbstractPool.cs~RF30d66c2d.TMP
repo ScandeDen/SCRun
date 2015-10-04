@@ -1,0 +1,93 @@
+﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
+namespace Defaults
+{
+    public abstract class AbstractPool<TItem> : AbstractBehavior
+        where TItem : class, IPoolable
+    {
+        public string Name;
+
+        public int InitPoolSize = 0;
+
+        public bool IsExtendable = true;
+
+        protected List<IPoolable> pool = new List<IPoolable>();
+
+        protected List<IPoolable> activated = new List<IPoolable>();
+
+        public AbstractPool()
+        {
+            Init();
+        }
+
+        protected virtual void Init()
+        {
+            for (int i = 0; i < InitPoolSize; i++)
+            {
+                var item = GetNewItem();
+                item.Deactivate();
+            }
+        }
+
+        protected virtual void ItemDeactivated(IPoolable item)
+        {
+            if (!(item is TItem))
+                return;
+            activated.Remove(item);
+            pool.Add(item);
+        }
+
+        protected virtual void ItemActivated(IPoolable item)
+        {
+            if (!(item is TItem))
+                return;
+            pool.Remove(item);
+            activated.Add(item);
+        }
+
+        public virtual TItem GetFreeItem()
+        {
+            TItem item = null;
+            if (pool.Count == 0)
+            {
+                if (IsExtendable)
+                {
+                    item = GetNewItem();
+                    item.Deactivate();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            item = (TItem)pool[0];
+            return item;
+        }
+
+        protected TItem GetNewItem()
+        {
+            var item = GenerateNew();
+            item.Activated += ItemActivated;
+            item.Deactivated += ItemDeactivated;
+            return item;
+        }
+
+        protected abstract TItem GenerateNew();
+
+        void OnDestroy()
+        {
+            foreach (var p in pool)
+            {
+                p.Activated -= ItemActivated;
+                p.Deactivated -= ItemDeactivated;
+            }
+            foreach (var p in activated)
+            {
+                p.Activated -= ItemActivated;
+                p.Deactivated -= ItemDeactivated;
+            }
+        }
+    }
+}

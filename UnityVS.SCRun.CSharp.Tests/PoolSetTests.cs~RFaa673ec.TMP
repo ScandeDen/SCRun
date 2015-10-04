@@ -1,0 +1,56 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using NUnit.Framework;
+using Core;
+using System.Collections;
+using UnityEngine;
+using Core.Pools;
+
+namespace Tests.Core
+{
+    [TestFixture]
+    public class PoolSetTests
+    {
+
+        public static PoolsSet GetArrange()
+        {
+            var result = new GameObject().AddComponent<PoolsSet>();
+            result.Prefab = Resources.
+                LoadAssetAtPath<GameObjectPool>("Assets/Prefabs/SomethingPool");
+            //result.Awake();
+            return result;
+        }
+
+        [Test, TestCaseSource(typeof(PoolSetTests), "EmptyKeyedPoolTestCases")]
+        public int UpdatePools_AfterAddingEmptyKeyedPools_CorrectCountAtPoolsManager(params KeyedPool[] pools)
+        {
+            //arrange
+            var instance = GetArrange();
+            instance.Pools.AddRange(pools);
+            //act
+            instance.Update();
+            var result = PoolsManager.Instance.Count();
+            GameObject.DestroyImmediate(instance.gameObject);
+            //assert
+            return result;
+        }
+
+        [Test, TestCaseSource(typeof(PoolSetTests), "KeyedPoolTestCases")]
+        public int OnAwake_AfterAddingKeyedPools_PoolsAreInstantiated(params KeyedPool[] pools)
+        {
+            //arrange
+            var instance = GetArrange();
+            instance.Pools.AddRange(pools);
+            //act
+            instance.Awake();
+            var objects = GameObject.FindObjectsOfType<GameObjectPool>();
+            var result = objects.Length;
+            GameObject.DestroyImmediate()
+            //assert
+            return ;
+        }
+        
+    }
+}

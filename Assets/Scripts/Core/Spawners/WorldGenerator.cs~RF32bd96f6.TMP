@@ -1,0 +1,107 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
+using Core.Spawners;
+using Core.Objects;
+
+namespace Core
+{
+    public class WorldGenerator : AbstractSpawner
+    {
+        [Header("World generation")]
+        protected Vector3 direction;
+        public Vector3 Direction
+        {
+            get
+            {
+                return direction;
+            }
+            set
+            {
+                direction = value;
+                normalizedDirection = direction.normalized;
+            }
+        }
+
+        public int InitRowCount = 10;
+
+        public int RowWidthInCells = 3;
+
+        public float SizeOfCells = 1f;
+
+        public int MinCellsDelaySpawn = 5;
+
+        public int MaxCellsDelaySpawn = 6;
+        
+        protected Vector3 LastFilledRow;
+
+        protected List<PoolableObject> spawnedItems = new List<PoolableObject>();
+
+        protected Vector3 normalizedDirection;
+
+        protected override void OnAwake()
+        {
+            base.OnAwake();
+            LastFilledRow = GetCashedComponent<Transform>().position;
+            normalizedDirection = direction.normalized;
+            for(int i = 0; i < InitRowCount; i++)
+            {
+                SpawnFromChosenedCase(SwitchRandomCase());
+            }
+        }
+
+        public void ShiftToNextRow()
+        {
+            SpawnFromChosenedCase(SwitchRandomCase());
+        }
+
+        public override void SpawnFromChosenedCase(SpawnCase chosened)
+        {
+            var spawnItem = PoolsManager.Instance.GetPool(chosened.UsedPool).GetFreeItem();
+            if (spawnItem == null)
+                return;
+            if (!spawnedItems.Contains(spawnItem))
+            {
+                spawnItem.Deactivated += RowDeactivated;
+                spawnedItems.Add(spawnItem);
+            }
+            spawnItem.ResetChanges();
+            LastFilledRow += normalizedDirection * SizeOfCells;
+
+            var transformIns = GetCashedComponent<Transform>();
+            var shift = transformIns.right * 
+                (Random.Range(0,RowWidthInCells) * SizeOfCells);
+            switch ()
+            {
+                case ShiftDirection.Right:
+                    shift = transformIns.right * ShiftDistance;
+                    break;
+                case ShiftDirection.Left:
+                    shift = transformIns.right * (-1) * ShiftDistance;
+                    break;
+            }
+            transformIns.position = transformIns.position + shift;
+            shiftDelayCoroutine.Start(ShiftDelayCoroutine());
+            var p = LastFilledRow + Offset;
+            spawnItem.GetCashedComponent<Transform>().position = p;
+            spawnItem.Activate();
+        }
+
+        protected void RowDeactivated(Defaults.IPoolable sender)
+        {
+            var spawnedItem = (PoolableObject)sender;
+            spawnedItem.Deactivated -= RowDeactivated;
+            spawnedItems.Remove(spawnedItem);
+            ShiftToNextRow();
+        }
+
+        void OnDestroy()
+        {
+            foreach (var r in spawnedItems)
+            {
+                r.Deactivated -= RowDeactivated;
+            }
+        }
+    }
+}

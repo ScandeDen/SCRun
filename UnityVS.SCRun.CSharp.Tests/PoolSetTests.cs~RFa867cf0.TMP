@@ -1,0 +1,52 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using NUnit.Framework;
+using Core;
+using System.Collections;
+using UnityEngine;
+
+namespace Tests.Core
+{
+    [TestFixture]
+    public class PoolSetTests
+    {
+        public static PoolsSet GetArrange()
+        {
+            var result = new GameObject().AddComponent<PoolsSet>();
+            //result.Awake();
+            return result;
+        }
+
+        [Test, TestCaseSource(typeof(KeyedPoolsFactory), "EmptyKeyedPoolTestCases")]
+        public int UpdatePools_AfterAddingEmptyKeyedPools_CorrectCountAtPoolsManager(params KeyedPool[] pools)
+        {
+            //arrange
+            var instance = GetArrange();
+            instance.Pools.AddRange(pools);
+            //act
+            instance.Update();
+            var result = PoolsManager.Instance.Count();
+            GameObject.DestroyImmediate(instance.gameObject);
+            //assert
+            return result;
+        }
+
+        [Test, TestCaseSource(typeof(PoolSetTests), "EmptyKeyedPoolTestCases")]
+        public int UpdateMoreThenOnePools_AfterAddingEmptyKeyedPools_CorrectCountAtPoolsManager(params KeyedPool[] pools)
+        {
+            //arrange
+            var instance1 = GetArrange();
+            var instance2 = GetArrange();
+            //act
+            instance1.Pools.AddRange(pools);
+            instance2.Pools.AddRange(pools);
+            instance.Awake();
+            //assert
+            
+            return PoolsManager.Instance.Count();
+        }
+        
+    }
+}

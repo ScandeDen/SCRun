@@ -1,0 +1,69 @@
+﻿using Core;
+using Core.Objects;
+using NUnit.Framework;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
+
+namespace Tests
+{
+    public class KeyedPoolsFactory
+    {
+        public static IEnumerable EmptyKeyedPoolTestCases
+        {
+            get
+            {
+                var keyedPools = new List<KeyedPool>();
+                yield return new TestCaseData(keyedPools.ToArray()).Returns(0).
+                    SetName("Empty keyed pools: 0");
+                keyedPools.Add(new KeyedPool("pool1"));
+                yield return new TestCaseData(keyedPools.ToArray()).Returns(1).
+                    SetName("Empty keyqed pools: pool1");
+                keyedPools.Add(new KeyedPool("pool2"));
+                keyedPools.Add(new KeyedPool("pool3"));
+                yield return new TestCaseData(keyedPools.ToArray()).Returns(3).
+                    SetName("Empty keyqed pools: pool1, pool2, pool3");
+                keyedPools.Add(new KeyedPool("pool2"));
+                keyedPools.Add(new KeyedPool("pool3"));
+                keyedPools.Add(new KeyedPool("pool4"));
+                yield return new TestCaseData(keyedPools.ToArray()).Returns(4).
+                    SetName("Empty keyqed pools: pool1, pool2, pool3, pool2, pool3, pool4");
+            }
+        }
+
+        public static IEnumerable KeyedPoolTestCases
+        {
+            get
+            {
+                var keyedPools = new List<KeyedPool>();
+                yield return new TestCaseData(keyedPools.ToArray()).Returns(0).
+                    SetName("Empty keyed pools: 0");
+                keyedPools.Add(new KeyedPool("pool1", GetNewPoolablePrefab("pool1")));
+                yield return new TestCaseData(keyedPools.ToArray()).Returns(1).
+                    SetName("Empty keyqed pools: pool1");
+                var pool2 = GetNewPoolablePrefab("pool2");
+                var pool3 = GetNewPoolablePrefab("pool3");
+                keyedPools.Add(new KeyedPool("pool2", pool2));
+                keyedPools.Add(new KeyedPool("pool3", pool3));
+                yield return new TestCaseData(keyedPools.ToArray()).Returns(3).
+                    SetName("Empty keyqed pools: pool1, pool2, pool3");
+                keyedPools.Add(new KeyedPool("pool2", pool2));
+                keyedPools.Add(new KeyedPool("pool3", pool3));
+                keyedPools.Add(new KeyedPool("pool4", GetNewPoolablePrefab("pool4")));
+                yield return new TestCaseData(keyedPools.ToArray()).Returns(4).
+                    SetName("Empty keyqed pools: pool1, pool2, pool3, pool2, pool3, pool4");
+            }
+        } 
+ 
+        protected static PoolableObject GetNewPoolablePrefab(string pathInPrefabs)
+        {
+            var result = Resources.LoadAssetAtPath<PoolableObject>("Asset/Prefabs/" + 
+                pathInPrefabs);
+            result.Awake();
+            return result;
+        }
+    }
+}

@@ -1,0 +1,65 @@
+﻿using Core.Pools;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
+
+namespace Core
+{
+    /// <summary>
+    /// Одиночка менеджер пулов. Хранит библиотеку ссылок на пулы с доступом по ключевой 
+    /// строке-названию пула и обеспечивает работу с ними.
+    /// </summary>
+    public class PoolsManager
+    {
+        private static PoolsManager instance;
+        public static PoolsManager Instance
+        {
+            get
+            {
+                if (instance == null)
+                    instance = new PoolsManager();
+                return instance;
+            }
+        }
+
+        private Dictionary<string, GameObjectPool> pools = 
+            new Dictionary<string, GameObjectPool>();
+
+        private PoolsManager()
+        {
+
+        }
+
+        public GameObjectPool GetPool(string poolKey)
+        {
+            return pools[poolKey];
+        }
+
+        public string GetPoolKey(int index)
+        {
+            return pools.Keys.ToArray()[index];
+        }
+
+        public int GetPoolIndex(string poolKey)
+        {
+            return pools.Keys.ToList().IndexOf(poolKey);
+        }
+
+        public List<string> GetPoolKeys()
+        {
+            return pools.Keys.ToList();
+        }
+
+        public void AddPool(string poolKey, GameObjectPool pool)
+        {
+            pools[poolKey] = pool;
+        }
+
+        public void Clear()
+        {
+            pools.Clear();
+        }
+    }
+}

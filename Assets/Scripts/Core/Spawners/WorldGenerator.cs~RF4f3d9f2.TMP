@@ -1,0 +1,222 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
+using Core.Spawners;
+using Core.Objects;
+
+namespace Core.Spawners
+{
+    public class WorldGenerator : AbstractSpawner<WorldItemCase>
+    {
+        [Header("World generation")]
+        public Transform TrackingObject;
+
+        [SerializeField]
+        protected Vector3 direction;
+        public Vector3 Direction
+        {
+            get
+            {
+                return direction;
+            }
+            set
+            {
+                direction = value;
+                normalizedDirection = direction.normalized;
+                var trans = GetCashedComponent<Transform>();
+                trans.LookAt(trans.position + direction);
+            }
+        }
+
+        public int InitRowCount = 10;
+
+        public int RowWidthInCells = 3;
+
+        public float SizeOfCells = 1f;
+        
+        protected Vector3 lastFilledRow;
+
+        protected List<PoolableObject> spawnedItems = new List<PoolableObject>();
+
+        protected Vector3 normalizedDirection;
+
+        protected bool[] placesInNextRow;
+
+        protected Vector3 lastPositionOfTrackingObject;
+
+        protected override void OnAwake()
+        {
+            base.OnAwake();
+        }
+
+        protected override void OnStart()
+        {
+            lastFilledRow = GetCashedComponent<Transform>().position;
+            normalizedDirection = direction.normalized;
+            var trans = GetCashedComponent<Transform>();
+            trans.LookAt(trans.position + direction);
+            if (TrackingObject != null)
+                lastPositionOfTrackingObject = TrackingObject.position;
+            foreach(var i in Cases)
+            {
+                i.ItemSpawned();
+            }
+            for (int i = 0; i < InitRowCount; i++)
+            {
+                ShiftToNextRow();
+            }
+        }
+
+        void Update()
+        {
+            if (TrackingObject == null)
+                return;
+            var trans = GetCashedComponent<Transform>();
+            //Debug.Log("lastPos: " + lastPositionOfTrackingObject);
+            var plane = new Plane(trans.forward, lastPositionOfTrackingObject + 
+                normalizedDirection * SizeOfCells);
+            var distanceToTracking = plane.GetDistanceToPoint(TrackingObject.position);
+            Debug.Log("Distance");
+            Debug.Log(plane.GetDistanceToPoint(lastFilledRow));
+            Debug.Log(lastPositionOfTrackingObject.z);
+            if (plane.GetSide(TrackingObject.position))
+            {
+                var rmDiv = distanceToTracking % SizeOfCells;
+                Debug.Log(distanceToTracking);
+                var count = rmDiv < 1 ? 1 : rmDiv;
+                Debug.Log(count);
+                lastPositionOfTrackingObject = TrackingObject.position 
+                    + plane.normal * (-1) * (distanceToTracking - (count * SizeOfCells));
+                //Debug.Log("count: " + count + 
+                //    " lastPos: " + lastPositionOfTrackingObject);
+                for (int i = 0; i < count; i++)
+                {
+                    ShiftToNextRow();
+                }
+            }
+        }
+
+        public void ShiftToNextRow()
+        {
+            placesInNextRow = new bool[RowWidthInCells];
+            lastFilledRow += normalizedDirection * SizeOfCells;
+            foreach (var cs in Cases)
+                SpawnFromChosenedCase(cs);
+        }
+
+        public override void SpawnFromChosenedCase(WorldItemCase chosened)
+        {
+            if (chosened == null)
+                return;
+            if (chosened.IsCanSpawned())
+            {
+                Debug.Log(chosened.UsedPool);
+                var spawnItem = PoolsManager.Instance.GetPool(chosened.UsedPool).
+                    GetFreeItem();
+                if (spawnItem == null)
+                    return;
+                spawnItem.ResetChanges();
+                var transformIns = GetCashedComponent<Transform>();
+                var itemCellable = spawnItem.GetComponent<CellableObject>();
+                var x = 0;
+                var avalableCellSets = new List<List<int>>();
+                List<int> currentSet = null;
+                for (var i = 0; i < RowWidthInCells; i++)
+                {
+
+                    if (!placesInNextRow[i])
+                    {
+                        if (currentSet == null)
+                        {
+                            currentSet = new List<int>();
+                            avalableCellSets.Add(currentSet);
+                        }
+                        currentSet.Add(i);
+                    }
+                    else
+                    {
+                        if (currentSet != null)
+                        {
+                            
+                            currentSet = null;
+                        }
+                    }
+                }
+                var width = itemCellable.WidthInCells;
+                var isCanSets = avalableCellSets.Where(o => o.Count > width);
+                if (isCanSets.Count() != 0)
+                {
+                    var chosenedRange = isCanSets.
+                        ToArray()[Random.Range(0, isCanSets.Count())];
+                    x = Random.
+                        Range(chosenedRange[0] + itemCellable.LeftEmptyCellsCount,
+                            chosenedRange[chosenedRange.Count - 1] -
+                                itemCellable.RightEmptyCellsCount);
+                    for (int i = x - itemCellable.LeftEmptyCellsCount;
+                        i <= x + itemCellable.RightEmptyCellsCount; i++)
+                    {
+                        placesInNextRow[x] = true;
+                    }
+                    var shift = Vector3.right * ((x + 0.5f) * SizeOfCells);
+                    var itemTransform = spawnItem.GetComponent<Transform>();
+                    itemTransform.localPosition = lastFilledRow + shift + Offset;
+                    itemTransform.SetParent(transformIns, false);
+                    spawnItem.Activate();
+                    if (!spawnedItems.Contains(spawnItem))
+                    {
+                        spawnItem.Deactivated += RowDeactivated;
+                        spawnedItems.Add(spawnItem);
+                    }
+                    chosened.ItemSpawned();
+                    return;
+                }
+            }
+            chosened.RowsShiftedPerOne();
+        }
+
+        protected void RowDeactivated(Defaults.IPoolable sender)
+        {
+            var spawnedItem = (PoolableObject)sender;
+            spawnedItem.Deactivated -= RowDeactivated;
+            spawnedItems.Remove(spawnedItem);
+        }
+
+        void OnDestroy()
+        {
+            foreach (var r in spawnedItems)
+            {
+                r.Deactivated -= RowDeactivated;
+            }
+        }
+    }
+
+    [System.Serializable]
+    public class WorldItemCase : SpawnCase
+    {
+        public int MinCellsDelaySpawn = 5;
+
+        public int MaxCellsDelaySpawn = 6;
+
+        protected int rowsElapsedFromLastSpawn;
+
+        protected int rowsForSpawnNextItem;
+
+        public void ItemSpawned()
+        {
+            rowsElapsedFromLastSpawn = 0;
+            rowsForSpawnNextItem = Random.Range(MinCellsDelaySpawn,
+                MaxCellsDelaySpawn + 1);
+        }
+
+        public bool IsCanSpawned()
+        {
+            return rowsElapsedFromLastSpawn >= rowsForSpawnNextItem;
+        }
+
+        public void RowsShiftedPerOne()
+        {
+            rowsElapsedFromLastSpawn++;
+        }
+    }
+}

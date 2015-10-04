@@ -1,0 +1,98 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
+
+namespace Core.Objects.Properties
+{
+    [RequireComponent(typeof(Collider))]
+    public class DamagableObject : Property
+    {
+
+        [Header("Damage")]
+
+        public List<ObjectDamage> TakingDamageFrom = new List<ObjectDamage>();
+
+        public Collider2D Collider;
+
+        public event DamageEventHandler Stunned;
+
+        protected bool isStunned;
+        public bool IsStunned
+        {
+            get
+            {
+                return isStunned;
+            }
+        }
+
+        protected Defaults.SafeCoroutine stunCoroutine;
+
+        protected override void OnAwake()
+        {
+            base.OnAwake();
+            CashComponent<Movement>();
+            stunCoroutine = new Defaults.SafeCoroutine(this);
+        }
+
+        protected override void ValueChange(int from, int to)
+        {
+            base.ValueChange(from, to);
+        }
+
+        void OnCollisionEnter2D(Collision2D other)
+        {
+            if (Value <= 0)
+                return;
+            foreach(var objDam in TakingDamageFrom)
+            {
+                if (other.gameObject.CompareTag(objDam.Tag))
+                {
+                    Value -= objDam.Damage;
+                    if (stunCoroutine == null)
+                    {
+                        
+                        stunCoroutine.Start(objDam);
+                        if (Stunned != null)
+                            Stunned.Invoke(true);
+                    }
+                    break;
+                }
+            }
+        }
+
+        protected IEnumerator Stun(ObjectDamage damage)
+        {
+            SetStunned(true, damage.IsDisableCollider);
+            yield return new WaitForSeconds(damage.StunSeconds);
+            stunCoroutine = null;
+            if (Stunned != null)
+                Stunned.Invoke(false);
+        }
+
+        protected void SetStunned(bool isStunned, bool disableCollider = true)
+        {
+            this.isStunned = isStunned;
+            var move = GetCashedComponent<Movement>();
+            if (move != null)
+                move.IsOn = !isStunned;
+            if ((disableCollider && isStunned == true) || isStunned == false)
+            {
+                if (Collider != null)
+                    Collider.enabled = !isStunned;
+            }
+        }
+    }
+
+    [System.Serializable]
+    public struct ObjectDamage
+    {
+        public string Tag;
+        public int Damage;
+        public float StunSeconds;
+        public bool IsDisableCollider;
+    }
+
+    public delegate void DamageEventHandler(bool isStunned);
+}

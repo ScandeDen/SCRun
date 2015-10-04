@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Gui.PrefsValueView" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAMAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Gui\PrefsValueView.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gui.ScoreDestinatinView">
+    <Position X="2.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAIAgQAAAAAAAEAAAAAIAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Gui\ScoreDestinatinView.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gui.TimeCounter" Collapsed="true">
+    <Position X="4" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAQQAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Gui\TimeCounter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Gui.Views.PropertyView" Collapsed="true">
+    <Position X="5.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAQAAAAAAAEAAAAAAAAAAAAAAAAAgAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Gui\PropertyView.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Defaults.AbstractBehavior" Collapsed="true">
+    <Position X="3.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAQCAAAAAAEAAAAAAAAAAAAAAAAAQIAAAAAEA=</HashCode>
+      <FileName>Assets\Scripts\AbstractBehavior.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Defaults.SceneLoader" Collapsed="true">
+    <Position X="1.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAEAAAAAAAAAAAAQAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\SceneLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="Gui.ValueType" Collapsed="true">
+    <Position X="0.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAgACA=</HashCode>
+      <FileName>Assets\Scripts\Gui\PrefsValueView.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

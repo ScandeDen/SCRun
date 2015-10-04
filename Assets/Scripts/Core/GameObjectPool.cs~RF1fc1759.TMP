@@ -1,0 +1,27 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
+using Core.Objects;
+using Defaults;
+
+namespace Core.Pools
+{
+    /// <summary>
+    /// Реализация абстрактного пула для игровых объектов с компонентом PoolableObject.
+    /// </summary>
+    public class GameObjectPool : AbstractPool<PoolableObject>
+    {
+        public PoolableObject Origin;
+
+        protected override PoolableObject GenerateNew()
+        {
+            return Instantiate<PoolableObject>(Origin);
+        }
+
+        protected override void OnAwake()
+        {
+            CashComponent<Transform>();
+        }
+    }
+}

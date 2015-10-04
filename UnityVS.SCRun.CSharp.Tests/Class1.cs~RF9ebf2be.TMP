@@ -1,0 +1,38 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using NUnit.Framework;
+using Core;
+using System.Collections;
+
+namespace Tests.Core
+{
+    [TestFixture]
+    public class PoolSetTests
+    {
+        public static IEnumerable KeyedPoolTestCases
+        {
+            get
+            {
+                KeyedPool[] keyedPools = new KeyedPool[0];
+                yield return new TestCaseData().Returns(null);
+                
+                yield return new TestCaseData(12, 2).Returns(6);
+                yield return new TestCaseData(12, 4).Returns(3);
+                yield return new TestCaseData(0, 0)
+                  .Throws(typeof(DivideByZeroException))
+                  .SetName("DivideByZero")
+                  .SetDescription("An exception is expected");
+            }
+        }  
+
+        [Test, TestCaseSource(typeof(PoolSetTests),"KeyedPoolTestCases")]
+        public object UpdatePools_AfterAddingSet_CorrectContainsOfPoolManager(params KeyedPool pools)
+        {
+            return null;
+        }
+
+        
+    }
+}

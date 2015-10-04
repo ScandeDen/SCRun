@@ -1,0 +1,27 @@
+﻿using UnityEngine;
+using System.Collections;
+using Core.Objects.Properties;
+
+namespace Gui.Views
+{
+    public class PropertyView : Defaults.AbstractBehavior
+    {
+        public Property Model;
+
+        // Use this for initialization
+        void Start()
+        {
+            
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+
+        }
+
+        protected override void OnAwake() { }
+
+        protected override void OnStart() { }
+    }
+}

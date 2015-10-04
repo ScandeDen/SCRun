@@ -1,0 +1,195 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Core.Pools.GameObjectPool" Collapsed="true">
+    <Position X="13.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAgAAAA=</HashCode>
+      <FileName>Assets\Scripts\Core\GameObjectPool.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Core.Objects.AbstractObject" Collapsed="true">
+    <Position X="8.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Core\Objects\AbstractObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Core.Objects.CellableObject" Collapsed="true">
+    <Position X="4" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAgAAABACAAAQAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Core\Objects\CellableObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Core.Objects.Movement" Collapsed="true">
+    <Position X="20.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAgAYIAQgACCAAACAABAAAACRAAEQwAIAECAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Core\Objects\Movement.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Core.Objects.PoolableObject" Collapsed="true">
+    <Position X="2.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQABAAABAAAAAAAAgAAQAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Core\Objects\PoolableObject.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Core.Objects.StatableObject" Collapsed="true">
+    <Position X="9.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQABAAAAAAAAEkAAAAEAAAAIACAAACAA=</HashCode>
+      <FileName>Assets\Scripts\Core\Objects\StatableObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Core.Objects.AbstractState" Collapsed="true">
+    <Position X="11" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAABDAAEAAgAAAAEAAAAABAAASAEAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Core\Objects\StatableObject.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Core.Objects.AbstractZone&lt;TEffect&gt;" Collapsed="true">
+    <Position X="12.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAABAIAAQAgAAAAAAAAAAAAAAAAAAIAIYAAAAAQAUAA=</HashCode>
+      <FileName>Assets\Scripts\Core\Objects\Zones\AbstractZone.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Core.Objects.Bonuses.AbstractBonus" Collapsed="true">
+    <Position X="14.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAABAAAAAAAAAAAAAAAAQACAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Core\Objects\Bonuses\AbstractBonus.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Core.Objects.Bonuses.PointsBonus" Collapsed="true">
+    <Position X="14.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAEAABAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Core\Objects\Bonuses\PointsBonus.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Core.PointsCollector" Collapsed="true">
+    <Position X="18.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAQAAAAABAAAAAAAAAAQIAAAAIQACAAAABCAI=</HashCode>
+      <FileName>Assets\Scripts\Core\Objects\PointsCollector.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Core.PoolsSet" Collapsed="true">
+    <Position X="0.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQBBAAAQAAABAAAAiAAAAAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Core\PoolsSet.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Core.WorldDestroyer" Collapsed="true">
+    <Position X="17.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAEAAAAAAAAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Core\WorldDestroyer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Core.Objects.Properties.DamagableObject" Collapsed="true">
+    <Position X="18.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQQIAAgAAAAAAAAAASAAAAEAgYAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Core\Objects\Properties\DamagableObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Core.Objects.Properties.PointsCounter" Collapsed="true">
+    <Position X="16.25" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Core\Objects\Properties\PointsCounter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Core.Objects.Properties.Property" Collapsed="true">
+    <Position X="17" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAAAAAAAAAAEAAACAAAAAgAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Core\Objects\Properties\Property.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Core.Objects.Zones.AbstractReversedZone&lt;TEffect&gt;" Collapsed="true">
+    <Position X="12.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAAAAAAAAAIAAQAIAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Core\Objects\Zones\AbstractReversedZone.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Core.Objects.Zones.FootingDetection" Collapsed="true">
+    <Position X="12.75" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Core\Objects\Zones\FootingDetection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Core.Objects.Zones.FootingState" Collapsed="true">
+    <Position X="11" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAEAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Core\Objects\Zones\FootingDetection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Core.Player.Player" Collapsed="true">
+    <Position X="11" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABABAAAAQAAAAAAAEAAABIABgAAAAAAAAAAAAQEAAAA=</HashCode>
+      <FileName>Assets\Scripts\Core\Player\Player.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Core.Player.PlayerControls" Collapsed="true">
+    <Position X="15.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAIAAAAQAAAAAAAEAAAAAAAAAAAAAAEABAAAAACAAA=</HashCode>
+      <FileName>Assets\Scripts\Core\Player\PlayerControls.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Core.Spawners.AbstractSpawner&lt;TSpawnGroup, TSpawnCase&gt;" Collapsed="true">
+    <Position X="7.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAACAAAAABAAAAAAAAAAAAAAAAgAA=</HashCode>
+      <FileName>Assets\Scripts\Core\Spawners\AbstractSpawner.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Core.Spawners.SpawnGroup&lt;TCase&gt;" Collapsed="true">
+    <Position X="5.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Core\Spawners\AbstractSpawner.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Core.Spawners.WorldGenerator" Collapsed="true">
+    <Position X="7.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AARQAAAAQAAAIAAAECBAACAAQAAAAAAAAIAAAAFAAEA=</HashCode>
+      <FileName>Assets\Scripts\Core\Spawners\WorldGenerator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Core.Spawners.WorldItemsGroup" Collapsed="true">
+    <Position X="5.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAACAEAAQAAAAAAAACAAAAAAAgEEAAAA=</HashCode>
+      <FileName>Assets\Scripts\Core\Spawners\WorldGenerator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Defaults.AbstractPool&lt;TItem&gt;" Collapsed="true">
+    <Position X="13.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAEQAACAAQAEAAAQAgAQAAAAAAAAAhCAACAAAA=</HashCode>
+      <FileName>Assets\Scripts\AbstractPool.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Defaults.AbstractBehavior" Collapsed="true">
+    <Position X="8.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAQCAAAAAAEAAAAAAAAAAAAAAAAAQIAAAAAEA=</HashCode>
+      <FileName>Assets\Scripts\AbstractBehavior.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

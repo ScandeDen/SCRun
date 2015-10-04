@@ -1,0 +1,68 @@
+﻿using NUnit.Framework;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Core.Objects;
+
+namespace Tests.Sources
+{
+    public class StatesFactory : AbstractSourceFactory
+    {
+        public static IEnumerable ConflictableEmptyStates
+        {
+            get
+            {
+                var data = new List<WrappedEmptyState>();
+                var state = new EmptyState("state1");
+                data.Add(new WrappedEmptyState(state));
+                yield return new TestCaseData(data.ToArray()).
+                    SetName("States: 1 non conflict");
+                state = new EmptyState("state2");
+                yield return new TestCaseData(data.ToArray()).
+                    SetName("States: 1 non conflict");
+                /*yield return new TestCaseData(Vector3.right).
+                    SetName("Direction:" + Vector3.right);
+                yield return new TestCaseData(Vector3.left).
+                    SetName("Direction:" + Vector3.left);
+                yield return new TestCaseData(Vector3.forward).
+                    SetName("Direction:" + Vector3.forward);
+                yield return new TestCaseData(Vector3.back).
+                    SetName("Direction:" + Vector3.back);
+                yield return new TestCaseData(Vector3.up).
+                    SetName("Direction:" + Vector3.up);
+                yield return new TestCaseData(Vector3.down).
+                    SetName("Direction:" + Vector3.down);
+                yield return new TestCaseData(Vector3.one).
+                    SetName("Direction:" + Vector3.one);*/
+            }
+        }
+ 
+        public struct WrappedEmptyState
+        {
+            public EmptyState State;
+
+            public WrappedEmptyState(EmptyState state)
+            {
+                State = state;
+            }
+        }
+
+        public class EmptyState : AbstractState
+        {
+            public EmptyState(string tag)
+                : base(tag) { }
+
+            public override void ApplyState(StatableObject target)
+            {
+                throw new NotImplementedException();
+            }
+
+            public override void ResetState(StatableObject target)
+            {
+                throw new NotImplementedException();
+            }
+        }
+    }
+}
