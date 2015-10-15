@@ -10,19 +10,58 @@ namespace Tests.Sources
 {
     public abstract class AbstractSourceFactory
     {
-        public static PoolableObject Enemy1 = GetNewPoolablePrefab<PoolableObject>("Objects/Enemy1.prefab");
-        public static PoolableObject Enemy2 = GetNewPoolablePrefab<PoolableObject>("Objects/Enemy2.prefab");
-        public static PoolableObject Enemy3 = GetNewPoolablePrefab<PoolableObject>("Objects/Enemy3.prefab");
-        public static PoolableObject Bonus1 = GetNewPoolablePrefab<PoolableObject>("Objects/Bonus1.prefab");
-        public static Transform Character = GetNewPoolablePrefab<Transform>("Objects/Character.prefab");
-        public static GameObjectPool SomethingPool = GetNewPoolablePrefab<GameObjectPool>("SomethingPool.prefab");
+        public static PoolableObject Enemy1
+        {
+            get
+            {
+                return GetPrefab<PoolableObject>("Objects/Enemy1");
+            }
+        }
 
-        protected static TComponent GetNewPoolablePrefab<TComponent>(string pathInPrefabs)
+        public static PoolableObject Enemy2
+        {
+            get
+            {
+                return GetPrefab<PoolableObject>("Objects/Enemy2");
+            }
+        }
+
+        public static PoolableObject Enemy3
+        {
+            get
+            {
+                return GetPrefab<PoolableObject>("Objects/Enemy3");
+            }
+        }
+
+        public static PoolableObject Bonus1
+        {
+            get
+            {
+                return GetPrefab<PoolableObject>("Objects/Bonus1");
+            }
+        }
+
+        public static Transform Character
+        {
+            get
+            {
+                return GetPrefab<Transform>("Objects/Character");
+            }
+        }
+
+        public static GameObjectPool SomethingPool
+        {
+            get
+            {
+                return GetPrefab<GameObjectPool>("SomethingPool");
+            }
+        }
+
+        protected static TComponent GetPrefab<TComponent>(string pathInPrefabs)
             where TComponent : Component
         {
-            var result = Resources.LoadAssetAtPath<TComponent>("Assets/Prefab/" +
-                pathInPrefabs);
-            return result;
+            return Resources.Load<TComponent>("Prefab/" + pathInPrefabs);
         }
     }
 }

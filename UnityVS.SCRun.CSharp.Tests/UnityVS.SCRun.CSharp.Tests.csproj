@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="nunit.core">
       <HintPath>..\Assets\UnityTestTools\UnitTesting\Editor\NUnit\Libs\nunit.core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\Assets\UnityTestTools\UnitTesting\Editor\NUnit\Libs\nunit.framework.dll</HintPath>
@@ -61,9 +62,9 @@
     <Compile Include="WorldGeneratorTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\UnityVS.SCRun.CSharp.csproj">
-      <Project>{3c88cc62-d70f-f1fb-321e-791ab6e21a74}</Project>
-      <Name>UnityVS.SCRun.CSharp</Name>
+    <ProjectReference Include="..\Assembly-CSharp.csproj">
+      <Project>{a676c336-cc20-55ff-d6f4-af2da87dcea8}</Project>
+      <Name>Assembly-CSharp</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

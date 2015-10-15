@@ -18,6 +18,7 @@ namespace Tests.Core
         {
             var result = new GameObject().AddComponent<PoolsSet>();
             result.Prefab = AbstractSourceFactory.SomethingPool;
+            //Debug.Log("result.Prefab: " + result.Prefab);
             return result;
         }
 
